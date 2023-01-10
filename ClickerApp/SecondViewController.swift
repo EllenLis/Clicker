@@ -10,6 +10,7 @@ import UIKit
 class SecondViewController: UIViewController {
 
     @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet weak var timerLabel: UILabel!
     
     @IBOutlet weak var pinkBtn: UIButton!
     @IBOutlet weak var yelloBtn: UIButton!
@@ -17,6 +18,10 @@ class SecondViewController: UIViewController {
     
     var massivBtns: [UIButton] = []
     var countTap = 0
+    
+    var counter = 30
+    
+    var timer: Timer?
     
     var selectedValueSec: Int?
     
@@ -60,17 +65,35 @@ class SecondViewController: UIViewController {
         } else {
             scoreLabel.text = "Your score: 0"
         }
+        
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.startTimer), userInfo: nil, repeats: true)
+        updateCounter()
+    }
+    
+    @objc func startTimer() {
+            counter -= 1
+        if counter == 0 {
+            performSegue(withIdentifier: "showThird", sender: nil)
+        }
+        updateCounter()
     }
     
     func updateScore() {
         scoreLabel.text = "Score: \(countTap)"
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard segue.identifier == "showThird" else { return }
-        guard let destVC = segue.destination as? ThirdViewController else { return }
-        destVC.selectedValue = countTap
-        updateScore()
+    func updateCounter() {
+        timerLabel.text = "Timer: \(counter)"
     }
+    
+    
+        
+        override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+            guard segue.identifier == "showThird" else { return }
+            guard let destVC = segue.destination as? ThirdViewController else { return }
+            destVC.selectedValue = countTap
+            updateScore()
+        }
+    
 
 }
